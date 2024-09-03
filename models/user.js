@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
   },
   occupation: {
     type: String,
-    required: true,
   },
 
   hashedPassword: {

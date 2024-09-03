@@ -55,4 +55,96 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/add-follower", async (req, res) => {
+  try {
+    const { username, userId } = req.body;
+    const userToAdd = await User.findOne({ username: username });
+    if (!userToAdd) {
+      return res.status(404).json({ error: "User to add not found." });
+    }
+
+    const currentUser = await User.findById(userId);
+
+    if (!currentUser) {
+      return res.status(404).json({ error: "Current user not found." });
+    }
+
+    const alreadyFollowed = currentUser.Followers.some(
+      (friend) => friend.username === username
+    );
+    if (alreadyFollowed) {
+      return res
+        .status(400)
+        .json({ error: "Username is already in your friends list." });
+    }
+
+    currentUser.Followers.push(userToAdd);
+    await currentUser.save();
+
+    res.status(200).json({ message: "Friend added successfully." });
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res
+      .status(400)
+      .json({ error: "An error occurred while adding the friend." });
+  }
+});
+
+router.get("/:userId", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      res.status(404);
+      throw new Error("Something went wrong");
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/add-friend", async (req, res) => {
+  try {
+    const { username, userId } = req.body;
+    const userToAdd = await User.findOne({ username: username });
+    if (!userToAdd) {
+      return res.status(404).json({ error: "User to add not found." });
+    }
+
+    const currentUser = await User.findById(userId);
+
+    if (!currentUser) {
+      return res.status(404).json({ error: "Current user not found." });
+    }
+
+    const alreadyfriend = currentUser.Friends.some(
+      (friend) => friend.username === username
+    );
+    if (alreadyfriend) {
+      return res
+        .status(400)
+        .json({ error: "Username is already in your friends list." });
+    }
+
+    currentUser.Friends.push(userToAdd);
+    await currentUser.save();
+
+    res.status(200).json({ message: "Friend added successfully." });
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res
+      .status(400)
+      .json({ error: "An error occurred while adding the friend." });
+  }
+});
+
 module.exports = router;
