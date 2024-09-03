@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 //models
 const User = require("../models/user");
+const Expierience = require("../models/expierience");
+
 
 //Routes
 
@@ -147,6 +149,61 @@ router.post("/add-friend", async (req, res) => {
     res
       .status(400)
       .json({ error: "An error occurred while adding the friend." });
+  }
+});
+
+
+
+router.post("/expierience", async (req, res) => {
+  try {
+    req.body.UserId = req.user._id;
+    if (req.body.isCurrentRole) {
+      req.body.EndDate = null;
+    }
+    const expierience = await Expierience.create(req.body);
+
+    res.status(201).json(expierience);
+  } catch (error) {
+    //console.log(error);
+    res.status(500).json(error);
+  }
+});
+//get all user expierience
+router.get("/expierience", async (req, res) => {
+  try {
+    const expierience = await Expierience.find({
+      UserId: req.user._id,
+    });
+    res.status(200).json(expierience);
+  } catch (error) {
+    //console.log(error);
+    res.status(500).json(error);
+  }
+});
+
+//get another user expierience
+router.get("/:userid//expierience", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userid);
+
+    if (!user) {
+      res.status(500).json({ error: "User does not exist" });
+    }
+    const exp = await Expierience.find({
+      UserId: req.params.userid,
+    });
+    res.status(200).json({ exp });
+  } catch (error) {
+    //console.log(error);
+    res.status(500).json(error);
+  }
+});
+
+router.put("/userId/experience/:expId", async (req, res) => {
+  const exp = await Expierience.findById(req.params.expId);
+  //verify user is the owner of this exp
+  if (!exp.UserId == req.user._id) {
+    res.status(500).json({ error: "You are not allowed to do that " });
   }
 });
 

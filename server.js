@@ -26,7 +26,7 @@ app.use("/profiles", profilesRouter);
 app.use("/follower", followerRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
-app.use("/expierience", expierienceRouter);
+//app.use("/expierience", expierienceRouter);
 
 const io = new Server(server, {
   cors: {
