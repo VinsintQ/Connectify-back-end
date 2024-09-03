@@ -12,7 +12,7 @@ const skillSchema = mongoose.Schema({
 });
 
 const educationSchema = mongoose.Schema({
-  userId: {
+  UserId: {
     required: true,
     type: mongoose.Schema.Types.ObjectId,
   },
