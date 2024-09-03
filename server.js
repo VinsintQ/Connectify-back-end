@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
-// at the top, with other imports
 const profilesRouter = require("./controllers/profile");
 const expierienceRouter = require("./controllers/expierience.js");
 const followerRouter = require("./controllers/follower");
@@ -11,8 +10,10 @@ require("./config/database.js");
 const morgan = require("morgan");
 const express = require("express");
 const { Server } = require("socket.io");
+const http = require("http");
 const usersRouter = require("./controllers/users");
 const app = express();
+const server = http.createServer(app);
 app.use(morgan("dev"));
 const PORT = process.env.PORT || 3000;
 app.use(express.json());

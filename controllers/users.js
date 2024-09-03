@@ -13,21 +13,26 @@ router.post("/signup", async (req, res) => {
     // Check if the username is already taken
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (userInDatabase) {
-      return res.status(400).json({ error: "Username already taken." }); //BAD IDEA TO SAY USER IS EXIST
+      return res.json({ error: "Username already taken." });
     }
+
+    console.log("here");
     // Create a new user with hashed password
     const user = await User.create({
-      Email: req.body.Email,
+      name: req.body.name,
+      username: req.body.username,
+      email: req.body.email,
+      phone: req.body.phone,
+      occupation: req.body.occupation,
       hashedPassword: bcrypt.hashSync(
         req.body.password,
         parseInt(process.env.SALT)
       ),
-      location: req.body.location,
-      Firstname: req.body.FirstName,
-      Lastname: req.body.LastName,
     });
+
+    console.log("past create");
     const token = jwt.sign(
-      { username: user.username, _id: user._id },
+      { username: user.username, id: user._id },
       process.env.JWT_SECRET
     );
     res.status(201).json({ user, token });
@@ -36,14 +41,12 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// other routes here
-
 router.post("/signin", async (req, res) => {
   try {
-    const user = await User.findOne({ Email: req.body.Email });
+    const user = await User.findOne({ username: req.body.username });
     if (user && bcrypt.compareSync(req.body.password, user.hashedPassword)) {
       const token = jwt.sign(
-        { Email: user.Eamil, _id: user._id },
+        { username: user.username, id: user._id },
         process.env.JWT_SECRET
       );
       res.status(200).json({ token });
