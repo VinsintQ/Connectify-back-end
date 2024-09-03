@@ -16,7 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use(cors());
-app.use("/test-jwt", testJWTRouter);
+
 app.use("/users", usersRouter);
 app.use("/profiles", profilesRouter);
 app.listen(PORT, () => {

@@ -1,12 +1,25 @@
 const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
-  username: String,
-  hashedPassword: String,
+  Firstname: {
+    required: true,
+    type: String,
+  },
+  Lastname: {
+    required: true,
+    type: String,
+  },
+  Email: {
+    required: true,
+    type: String,
+  },
+  hashedPassword: {
+    required: true,
+    type: String,
+  },
+  Location: String,
 });
 
-// models/user.js
-// ... userSchema above
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     delete returnedObject.hashedPassword;
