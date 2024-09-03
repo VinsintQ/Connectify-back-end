@@ -182,7 +182,7 @@ router.get("/expierience", async (req, res) => {
 });
 
 //get another user expierience
-router.get("/:userid//expierience", async (req, res) => {
+router.get("/:userid/expierience", async (req, res) => {
   try {
     const user = await User.findById(req.params.userid);
 
@@ -205,6 +205,16 @@ router.put("/userId/experience/:expId", async (req, res) => {
   if (!exp.UserId == req.user._id) {
     res.status(500).json({ error: "You are not allowed to do that " });
   }
+});
+
+router.delete("/userId/experience/:expId", async (req, res) => {
+  const exp = await Expierience.findById(req.params.expId);
+
+  if (!exp.UserId == req.user._id) {
+    res.status(500).json({ error: "only owner can do this " });
+  }
+  await exp.delete();
+  res.status(200).json({ message: "Expierience deleted success" });
 });
 
 module.exports = router;
