@@ -1,23 +1,47 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
-  Firstname: {
-    required: true,
+followersSchema = new mongoose.Schema({
+  username: {
     type: String,
-  },
-  Lastname: {
     required: true,
-    type: String,
   },
-  Email: {
+});
+
+friendsSchema = new mongoose.Schema({
+  username: {
+    type: String,
     required: true,
-    type: String,
   },
+});
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  occupation: {
+    type: String,
+    required: true,
+  },
+
   hashedPassword: {
-    required: true,
     type: String,
+    required: true,
   },
-  Location: String,
+  Followers: [followersSchema],
+  Friends: [friendsSchema],
 });
 
 userSchema.set("toJSON", {
