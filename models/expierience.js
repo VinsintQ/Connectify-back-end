@@ -16,9 +16,9 @@ const expierienceSchema = new mongoose.Schema({
 
   company: { required: true, type: String },
 
-  isCurrentRole: { type: boolean, default: false },
+  isCurrentRole: { type: Boolean, default: false },
   StartDate: { type: Date, required: true },
-  EndDate: { type: Date, required: true },
+  EndDate: { type: Date },
   Description: String,
   skills: [skillSchema],
 });

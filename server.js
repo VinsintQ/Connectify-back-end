@@ -3,7 +3,7 @@ dotenv.config();
 const cors = require("cors");
 // at the top, with other imports
 const profilesRouter = require("./controllers/profile");
-
+const expierienceRouter = require("./controllers/expierience.js");
 require("./config/database.js");
 const morgan = require("morgan");
 const express = require("express");
@@ -19,6 +19,7 @@ app.use(cors());
 
 app.use("/users", usersRouter);
 app.use("/profiles", profilesRouter);
+app.use("/expierience", expierienceRouter);
 app.listen(PORT, () => {
   console.log("The express app is ready!");
 });
