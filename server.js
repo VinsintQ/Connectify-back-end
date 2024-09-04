@@ -6,6 +6,7 @@ const expierienceRouter = require("./controllers/expierience.js");
 const followerRouter = require("./controllers/follower");
 const conversationRouter = require("./controllers/conversation");
 const messageRouter = require("./controllers/message");
+const companyRouter = require("./controllers/company");
 require("./config/database.js");
 const morgan = require("morgan");
 const express = require("express");
@@ -26,6 +27,7 @@ app.use("/profiles", profilesRouter);
 app.use("/follower", followerRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
+app.use("/company", companyRouter);
 //app.use("/expierience", expierienceRouter);
 
 const io = new Server(server, {
