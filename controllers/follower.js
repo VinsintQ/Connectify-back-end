@@ -48,17 +48,4 @@ router.post("/add-follower", async (req, res) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
-      res.status(404);
-      throw new Error("Something went wrong");
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
 module.exports = router;
