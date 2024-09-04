@@ -8,6 +8,7 @@ const skillSchema = mongoose.Schema({
   UserId: {
     required: true,
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
