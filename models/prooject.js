@@ -8,4 +8,4 @@ const projectSchema = mongoose.Schema({
 const proskillSchema = mongoose.Schema({
   skill: { required: true, type: String },
 });
-module.exports = mongoose.model("expierience", projectSchema);
+module.exports = mongoose.model("project", projectSchema);
