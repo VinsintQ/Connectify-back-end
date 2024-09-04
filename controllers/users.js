@@ -49,7 +49,7 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (user && bcrypt.compareSync(req.body.password, user.hashedPassword)) {
       const token = jwt.sign(
-        { username: user.username, id: user._id },
+        { username: user.username, _id: user._id },
         process.env.JWT_SECRET
       );
       res.status(200).json({ token });
@@ -185,7 +185,7 @@ router.get("/expierience", async (req, res) => {
 
 router.get("/:userId/expierience", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userid);
+    const user = await User.findById(req.params.userId);
 
     if (!user) {
       res.status(500).json({ error: "User does not exist" });
@@ -200,7 +200,7 @@ router.get("/:userId/expierience", async (req, res) => {
   }
 });
 
-router.put("/userId/experience/:expId", async (req, res) => {
+router.put("/:userId/experience/:expId", async (req, res) => {
   const exp = await Expierience.findById(req.params.expId);
   //verify user is the owner of this exp
   if (!exp.UserId == req.user._id) {
@@ -208,7 +208,7 @@ router.put("/userId/experience/:expId", async (req, res) => {
   }
 });
 
-router.delete("/userId/experience/:expId", async (req, res) => {
+router.delete("/:userId/experience/:expId", async (req, res) => {
   const exp = await Expierience.findByIdAndDelete(req.params.expId);
 
   if (!exp.UserId == req.user._id) {
@@ -218,15 +218,16 @@ router.delete("/userId/experience/:expId", async (req, res) => {
   res.status(200).json({ message: "Expierience deleted success" });
 });
 
-router.post(":userId/experience", async (req, res) => {
+router.post("/:userId/experience", async (req, res) => {
   try {
-    req.body.UserId = req.user._id;
+    if(req.body.UserId = req.user._id){
     if (req.body.isCurrentRole) {
       req.body.EndDate = null;
     }
-    const experiece = await Experience.create(req.body);
+    const experience = await Expierience.create(req.body);
 
-    res.status(201).json(experiece);
+    res.status(201).json(experience);
+    }
   } catch (error) {
     //console.log(error);
     res.status(500).json(error);
