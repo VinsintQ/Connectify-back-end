@@ -8,9 +8,7 @@ const User = require("../models/user");
 const Expierience = require("../models/expierience");
 const Education = require("../models/education");
 
-
 //Routes
-
 router.post("/signup", async (req, res) => {
   try {
     // Check if the username is already taken
@@ -19,7 +17,6 @@ router.post("/signup", async (req, res) => {
       return res.json({ error: "Username already taken." });
     }
 
-    console.log("here");
     // Create a new user with hashed password
     const user = await User.create({
       name: req.body.name,
@@ -33,9 +30,11 @@ router.post("/signup", async (req, res) => {
       ),
     });
 
-    console.log("past create");
     const token = jwt.sign(
-      { username: user.username, id: user._id },
+      {
+        username: user.username,
+        _id: user._id,
+      },
       process.env.JWT_SECRET
     );
     res.status(201).json({ user, token });
@@ -49,7 +48,11 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (user && bcrypt.compareSync(req.body.password, user.hashedPassword)) {
       const token = jwt.sign(
-        { username: user.username, id: user._id },
+        {
+          username: user.username,
+          _id: user._id,
+          isRestaurant: user.isRestaurant,
+        },
         process.env.JWT_SECRET
       );
       res.status(200).json({ token });
@@ -156,7 +159,6 @@ router.post("/add-friend", async (req, res) => {
 //experiece routes here---------------------
 
 router.post("/expierience", async (req, res) => {
-
   try {
     req.body.UserId = req.user._id;
     if (req.body.isCurrentRole) {
@@ -233,8 +235,6 @@ router.post(":userId/experience", async (req, res) => {
   }
 });
 
-
-
 //education routes here------------------------
 
 router.post(":userId/education", async (req, res) => {
@@ -275,8 +275,7 @@ router.put("/userId/education/:eduId", async (req, res) => {
   //verify user is the owner of this edu
   if (!education.UserId == req.user._id) {
     res.status(500).json({ error: "You are not allowed to do that " });
-  }
-  else{
+  } else {
     await Education.findByIdAndUpdate(req.params.eduId, req.body);
   }
   res.status(200).json({ message: "education updated" });

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Company = require("../models/company");
+const Company = require("../models/Company");
 const Job = require("../models/job");
 const app = require("../models/Application");
 const verifyToken = require("../middleware/verify-token");
@@ -32,9 +32,13 @@ router.post("/", async (req, res) => {
     const company = await Company.create(req.body);
     res.status(201).json(company);
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 router.put("/:companyId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);

@@ -2,11 +2,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const profilesRouter = require("./controllers/profile");
-const expierienceRouter = require("./controllers/expierience.js");
+
 const followerRouter = require("./controllers/follower");
 const conversationRouter = require("./controllers/conversation");
 const messageRouter = require("./controllers/message");
-const companyRouter = require("./controllers/company");
+const companyRouter = require("./controllers/company.js");
 require("./config/database.js");
 const morgan = require("morgan");
 const express = require("express");
