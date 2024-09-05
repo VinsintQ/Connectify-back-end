@@ -7,9 +7,10 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const Expierience = require("../models/expierience");
 const Education = require("../models/education");
-
+const Project = require("../models/project");
+const project = require("../models/project");
 // protected Routes
-router.use(verifyToken);
+
 //Routes
 router.post("/signup", async (req, res) => {
   try {
@@ -65,6 +66,8 @@ router.post("/signin", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+router.use(verifyToken);
 
 router.get("/", async (req, res) => {
   try {
@@ -195,7 +198,7 @@ router.get("/:userId/expierience", async (req, res) => {
       res.status(500).json({ error: "User does not exist" });
     }
     const exp = await Expierience.find({
-      UserId: req.params.userid,
+      UserId: req.params.userId,
     });
     res.status(200).json({ exp });
   } catch (error) {
@@ -224,14 +227,14 @@ router.delete("/:userId/experience/:expId", async (req, res) => {
 
 router.post("/:userId/experience", async (req, res) => {
   try {
-    if(req.body.UserId = req.user._id){
+    req.body.UserId = req.user._id;
+
     if (req.body.isCurrentRole) {
       req.body.EndDate = null;
     }
     const experience = await Expierience.create(req.body);
 
     res.status(201).json(experience);
-    }
   } catch (error) {
     //console.log(error);
     res.status(500).json(error);
@@ -272,7 +275,7 @@ router.get("/:userid/education", async (req, res) => {
   }
 });
 
-router.put("/userId/education/:eduId", async (req, res) => {
+router.put("/:userId/education/:eduId", async (req, res) => {
   const education = await Education.findById(req.params.eduId);
 
   //verify user is the owner of this edu
@@ -284,12 +287,62 @@ router.put("/userId/education/:eduId", async (req, res) => {
   res.status(200).json({ message: "education updated" });
 });
 
-router.delete("/userId/education/:eduId", async (req, res) => {
-  const education = await Education.findByIdAndDelete(req.params.eduId);
-
+router.delete("/:userId/education/:eduId", async (req, res) => {
+  const education = await Education.findById(req.params.eduId);
   if (!education.UserId == req.user._id) {
     res.status(500).json({ error: "only owner can do this " });
   }
+
+  const deletedEducation = await Education.findByIdAndDelete(req.params.eduId);
+
+  // await education.delete();
+  res.status(200).json({ message: "education deleted success" });
+});
+
+//project routes here------------------------
+
+router.post("/:userId/project", async (req, res) => {
+  try {
+    req.body.userId = req.user._id;
+
+    const project = await Project.create(req.body);
+    res.status(201).json(project);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:userId/project", async (req, res) => {
+  try {
+    const projects = await Project.find({ userId: req.user._id });
+
+    res.status(201).json(projects);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+router.put("/:userId/project/:proId", async (req, res) => {
+  const project = await Project.findById(req.params.proId);
+
+  if (!project.userId == req.user._id) {
+    res.status(500).json({ error: "You are not allowed to do that " });
+  } else {
+    await Project.findByIdAndUpdate(req.params.proId, req.body);
+  }
+  res.status(200).json({ message: "project updated" });
+});
+
+router.delete("/:userId/project/:proId", async (req, res) => {
+  const project = await Project.findById(req.params.proId);
+
+  if (!project.userId == req.user._id) {
+    res.status(500).json({ error: "only owner can do this " });
+  }
+
+  const deletesproject = await Project.findByIdAndDelete(req.params.proId);
+
   // await education.delete();
   res.status(200).json({ message: "education deleted success" });
 });
