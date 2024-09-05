@@ -9,14 +9,14 @@ const disLikeSchema = new mongoose.Schema({
 });
 
 const ReplySchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   like: [likeSchema],
   message: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 
 const commentSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   like: [likeSchema],
   message: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
