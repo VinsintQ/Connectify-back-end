@@ -534,4 +534,57 @@ router.delete("/:userId/project/:projectId/tools/:toolId", async (req, res) => {
   }
 });
 
+//like  a post route
+router.post("/:userId/post/:postId/like", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    likes = post.like;
+    const hasLiked = likes.some((like) => like.userid == req.user._id);
+    if (hasLiked) {
+      return res
+        .status(400)
+        .json({ error: "You have already liked this post" });
+    }
+
+    req.body.userid = req.user._id;
+    post.like.push(req.body);
+
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+//dislike a post route
+router.post("/:userId/post/:postId/dislike", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    dislikes = post.disLike;
+    const hasdisLiked = dislikes.some(
+      (dislike) => dislike.userid == req.user._id
+    );
+    if (hasdisLiked) {
+      return res
+        .status(400)
+        .json({ error: "You have already liked this post" });
+    }
+
+    req.body.userid = req.user._id;
+    post.disLike.push(req.body);
+
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

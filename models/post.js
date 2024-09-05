@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const likeSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const disLikeSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const ReplySchema = new mongoose.Schema({
