@@ -185,10 +185,16 @@ router.post("/:companyId/about", async (req, res) => {
     if (!company) {
       res.status(401).json({ error: "cant find thsis company" });
     }
-    const about = req.body;
+    if(company.owner !== req.user._id){
+      res.status(401).json({ error: "Unauthorized" });
+    }
+    else{
+       const about = req.body;
     company.About.push(about);
     company.save();
     res.status(200).json(about);
+    }
+   
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -202,7 +208,10 @@ router.put("/:companyId/about", async (req, res) => {
     if (!company) {
       res.status(401).json({ error: "cant find thsis company" });
     }
-
+  if(company.owner !== req.user._id){
+      res.status(401).json({ error: "Unauthorized" });
+    }
+    else{
     const about = req.body;
     company.About[0].description = about.description?about.description: company.About[0].description?company.About[0].description: null;
 
@@ -213,6 +222,7 @@ router.put("/:companyId/about", async (req, res) => {
     company.About[0].location = about.location?about.location: company.About[0].location?company.About[0].location: null;
     company.save();
     res.status(200).json(about);
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
