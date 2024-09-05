@@ -9,6 +9,7 @@ const Expierience = require("../models/expierience");
 const Education = require("../models/education");
 const Project = require("../models/project");
 const Post = require("../models/post");
+const user = require("../models/user");
 
 // protected Routes
 
@@ -435,4 +436,53 @@ router.delete("/:userId/post/:postId/comment/:commentId", async (req, res) => {
   }
 });
 
+router.post("/:userId/skill", async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (req.params.userId !== req.user._id) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    user.Skills.push(req.body);
+
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:userId/skill/:skillId", async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    user.Skills = user.Skills.filter((skill) => {
+      return skill.id !== req.params.skillId;
+    });
+
+    user.save();
+
+    res.status(200).json(user.Skills);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/:userId/skill", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+
+    const skills = user.Skills;
+
+    res.status(200).json(skills);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router;
