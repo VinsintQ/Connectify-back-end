@@ -8,7 +8,8 @@ const User = require("../models/user");
 const Expierience = require("../models/expierience");
 const Education = require("../models/education");
 const Project = require("../models/project");
-const project = require("../models/project");
+const Post = require("../models/post");
+
 // protected Routes
 
 //Routes
@@ -344,7 +345,94 @@ router.delete("/:userId/project/:proId", async (req, res) => {
   const deletesproject = await Project.findByIdAndDelete(req.params.proId);
 
   // await education.delete();
-  res.status(200).json({ message: "education deleted success" });
+  res.status(200).json({ message: "project deleted success" });
+});
+
+//post routes here
+
+router.post("/:userId/post", async (req, res) => {
+  try {
+    req.body.userId = req.user._id;
+
+    const post = await Post.create(req.body);
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:userId/post", async (req, res) => {
+  try {
+    const posts = await Post.find({ userId: req.user._id });
+
+    res.status(201).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
+
+router.put("/:userId/post/:postId", async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+
+  if (!post.userId == req.user._id) {
+    res.status(500).json({ error: "You are not allowed to do that " });
+  } else {
+    await Post.findByIdAndUpdate(req.params.postId, req.body);
+  }
+  res.status(200).json({ message: "post updated" });
+});
+
+router.delete("/:userId/post/:postId", async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+
+  if (!post.userId == req.user._id) {
+    res.status(500).json({ error: "only owner can do this " });
+  }
+
+  const deletesproject = await Post.findByIdAndDelete(req.params.postId);
+
+  // await education.delete();
+  res.status(200).json({ message: "post deleted success" });
+});
+
+//comments routes here---------------------------
+
+router.get("/:userId/post/:postId/comment", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost.comments);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/:userId/post/:postId/comment", async (req, res) => {
+  try {
+    req.body.userId = req.user._id;
+    const currentPost = await Post.findById(req.params.postId);
+    await currentPost.comments.push(req.body);
+    currentPost.save();
+    res.status(201).json(currentPost.comments[currentPost.comments.length - 1]);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.delete("/:userId/post/:postId/comment/:commentId", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.comments = currentPost.comments.filter((comment) => {
+      return comment.id !== req.params.commentId;
+    });
+
+    currentPost.save();
+
+    res.status(200).json(currentPost.comments);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error });
+  }
 });
 
 module.exports = router;
