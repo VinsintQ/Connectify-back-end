@@ -535,6 +535,16 @@ router.delete("/:userId/project/:projectId/tools/:toolId", async (req, res) => {
 });
 
 //like  a post route
+
+router.get("/:userId/post/:postId/like", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.post("/:userId/post/:postId/like", async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -559,7 +569,33 @@ router.post("/:userId/post/:postId/like", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+router.delete("/:userId/post/:postId/like/:likeId", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.like = currentPost.like.filter((like) => {
+      return like.id !== req.params.likeId;
+    });
+    currentPost.save();
+
+    res.status(200).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error });
+  }
+});
+
 //dislike a post route
+
+router.get("/:userId/post/:postId/dislike", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost.disLike);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.post("/:userId/post/:postId/dislike", async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -584,6 +620,21 @@ router.post("/:userId/post/:postId/dislike", async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:userId/post/:postId/dislike/:dislikeId", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.disLike = currentPost.disLike.filter((disLike) => {
+      return disLike.id !== req.params.dislikeId;
+    });
+    currentPost.save();
+
+    res.status(200).json(currentPost.disLike);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error });
   }
 });
 
