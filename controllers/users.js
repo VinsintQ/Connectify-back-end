@@ -1,20 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-
+const verifyToken = require("../middleware/verify-token");
 const bcrypt = require("bcrypt");
 //models
 const User = require("../models/user");
 const Expierience = require("../models/expierience");
 const Education = require("../models/education");
 
+// protected Routes
+router.use(verifyToken);
 //Routes
 router.post("/signup", async (req, res) => {
   try {
     // Check if the username is already taken
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (userInDatabase) {
-      return res.json({ error: "Username already taken." });
+      return res.status(400).json({ error: "Username already taken." });
     }
 
     // Create a new user with hashed password

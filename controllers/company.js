@@ -5,6 +5,7 @@ const Job = require("../models/job");
 const app = require("../models/Application");
 const verifyToken = require("../middleware/verify-token");
 
+router.use(verifyToken);
 //company routers ------------------------
 router.get("/", async (req, res) => {
   try {
