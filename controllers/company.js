@@ -2,9 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Company = require("../models/Company");
 const Job = require("../models/job");
-const app = require("../models/Application");
+const App = require("../models/Application");
 const verifyToken = require("../middleware/verify-token");
-
 
 router.use(verifyToken);
 //company routers ------------------------
@@ -22,8 +21,7 @@ router.get("/:companyId", async (req, res) => {
     const company = await Company.findById(req.params.companyId);
     if (!company) {
       res.status(404).json({ error: "company not found" });
-    }
-    else{
+    } else {
       res.status(200).json(company);
     }
   } catch (error) {
@@ -88,10 +86,13 @@ router.post("/:companyId/jobs", async (req, res) => {
 });
 
 router.get("/:companyId/jobs/:jobId", async (req, res) => {
-  console.log("hello")
+  console.log("hello");
   try {
     // const job = await Job.findById(req.params.jobId);
-    const job = await Job.findOne({company: req.params.companyId, _id: req.params.jobId});
+    const job = await Job.findOne({
+      company: req.params.companyId,
+      _id: req.params.jobId,
+    });
     res.status(200).json(job);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -140,7 +141,7 @@ router.post("/:companyId/jobs/:jobId/app", async (req, res) => {
     req.body.userId = req.user._id;
     req.body.companyId = req.params.companyId;
     req.body.jobId = req.params.jobId;
-    const app = await app.create(req.body);
+    const app = await App.create(req.body);
     res.status(200).json(app);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -156,7 +157,7 @@ router.get("/:companyId/jobs/:jobId/app", async (req, res) => {
       res.status(401).json({ error: "an error occured" });
     }
 
-    const app = await app.find({ jobId: req.params.jobId });
+    const app = await App.find({ jobId: req.params.jobId });
     res.status(200).json(app);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -176,8 +177,7 @@ router.get("/:companyId/about", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
-);
+});
 
 router.post("/:companyId/about", async (req, res) => {
   try {
@@ -185,22 +185,18 @@ router.post("/:companyId/about", async (req, res) => {
     if (!company) {
       res.status(401).json({ error: "cant find thsis company" });
     }
-    if(company.owner !== req.user._id){
+    if (company.owner !== req.user._id) {
       res.status(401).json({ error: "Unauthorized" });
+    } else {
+      const about = req.body;
+      company.About.push(about);
+      company.save();
+      res.status(200).json(about);
     }
-    else{
-       const about = req.body;
-    company.About.push(about);
-    company.save();
-    res.status(200).json(about);
-    }
-   
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
-);
-
+});
 
 router.put("/:companyId/about", async (req, res) => {
   try {
@@ -208,28 +204,39 @@ router.put("/:companyId/about", async (req, res) => {
     if (!company) {
       res.status(401).json({ error: "cant find thsis company" });
     }
-  if(company.owner !== req.user._id){
+    if (company.owner !== req.user._id) {
       res.status(401).json({ error: "Unauthorized" });
-    }
-    else{
-    const about = req.body;
-    company.About[0].description = about.description?about.description: company.About[0].description?company.About[0].description: null;
+    } else {
+      const about = req.body;
+      company.About[0].description = about.description
+        ? about.description
+        : company.About[0].description
+        ? company.About[0].description
+        : null;
 
-    company.About[0].industry = about.industry?about.industry: company.About[0].industry?company.About[0].industry: null;
+      company.About[0].industry = about.industry
+        ? about.industry
+        : company.About[0].industry
+        ? company.About[0].industry
+        : null;
 
-    company.About[0].workplace = about.workplace?about.workplace: company.About[0].workplace?company.About[0].workplace: null;
+      company.About[0].workplace = about.workplace
+        ? about.workplace
+        : company.About[0].workplace
+        ? company.About[0].workplace
+        : null;
 
-    company.About[0].location = about.location?about.location: company.About[0].location?company.About[0].location: null;
-    company.save();
-    res.status(200).json(about);
+      company.About[0].location = about.location
+        ? about.location
+        : company.About[0].location
+        ? company.About[0].location
+        : null;
+      company.save();
+      res.status(200).json(about);
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
-);
-
-
- 
+});
 
 module.exports = router;
