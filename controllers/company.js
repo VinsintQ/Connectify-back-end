@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Company = require("../models/company");
+const Company = require("../models/Company");
 const Job = require("../models/job");
+const app = require("../models/Application");
 const verifyToken = require("../middleware/verify-token");
 
 //company routers ------------------------
@@ -34,9 +35,13 @@ router.post("/", async (req, res) => {
     const company = await Company.create(req.body);
     res.status(201).json(company);
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 router.put("/:companyId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
@@ -116,6 +121,41 @@ router.delete("/:companyId/jobs/:jobId", async (req, res) => {
       const job = await Job.findByIdAndDelete(req.params.jobId);
       res.status(200).json({ message: "job deleted successfully" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// applications routes ----------------------------------------
+// apply on a ajob
+router.post("/:companyId/jobs/:jobId/app", async (req, res) => {
+  try {
+    const company = await Company.findById(req.params.companyId);
+    const job = await Job.findById(req.params.jobId);
+    if (!company || !job) {
+      res.status(401).json({ error: "an error occured" });
+    }
+    req.body.userId = req.user._id;
+    req.body.companyId = req.params.companyId;
+    req.body.jobId = req.params.jobId;
+    const app = await app.create(req.body);
+    res.status(200).json(app);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//retrive all app on a job
+router.get("/:companyId/jobs/:jobId/app", async (req, res) => {
+  try {
+    const company = await Company.findById(req.params.companyId);
+    const job = await Job.findById(req.params.jobId);
+    if (!company || !job) {
+      res.status(401).json({ error: "an error occured" });
+    }
+
+    const app = await app.find({ jobId: req.params.jobId });
+    res.status(200).json(app);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
