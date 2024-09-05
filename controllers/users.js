@@ -436,6 +436,7 @@ router.delete("/:userId/post/:postId/comment/:commentId", async (req, res) => {
   }
 });
 
+//users skills routes
 router.post("/:userId/skill", async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -485,4 +486,52 @@ router.get("/:userId/skill", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// project tools routes
+router.post("/:userId/project/:projectId/tools", async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const project = await Project.findById(req.params.projectId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
+
+    await project.tools.push(req.body);
+    project.save();
+    res.status(200).json(project.tools);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/:userId/project/:projectId/tools", async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId);
+
+    const tools = project.tools;
+
+    res.status(200).json(tools);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:userId/project/:projectId/tools/:toolId", async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId);
+
+    project.tools = project.tools.filter((tool) => {
+      return tool.id !== req.params.toolId;
+    });
+
+    project.save();
+
+    res.status(200).json(project.tools);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

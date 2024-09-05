@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const proskillSchema = mongoose.Schema({
-  skill: { required: true, type: String },
+const toolsSchema = mongoose.Schema({
+  tool: { required: true, type: String },
 });
 
 const projectSchema = mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   description: { required: true, type: String },
-  skills: [proskillSchema],
+  tools: [toolsSchema],
 });
 
 module.exports = mongoose.model("project", projectSchema);
