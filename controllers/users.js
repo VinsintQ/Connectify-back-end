@@ -534,56 +534,50 @@ router.delete("/:userId/project/:projectId/tools/:toolId", async (req, res) => {
   }
 });
 
-//like  a post route
-router.post("/:userId/post/:postId/like", async (req, res) => {
+//Like route here--------------
+
+router.get("/:userId/post/:postId/like", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-    likes = post.like;
-    const hasLiked = likes.some((like) => like.userid == req.user._id);
-    if (hasLiked) {
-      return res
-        .status(400)
-        .json({ error: "You have already liked this post" });
-    }
-
-    req.body.userid = req.user._id;
-    post.like.push(req.body);
-
-    await post.save();
-
-    res.status(200).json(post);
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost.like);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(error);
   }
 });
-//dislike a post route
-router.post("/:userId/post/:postId/dislike", async (req, res) => {
+
+router.post("/:userId/post/:postId/like", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-    dislikes = post.disLike;
-    const hasdisLiked = dislikes.some(
-      (dislike) => dislike.userid == req.user._id
-    );
-    if (hasdisLiked) {
-      return res
-        .status(400)
-        .json({ error: "You have already liked this post" });
-    }
+    req.body.userId = req.user._id;
 
-    req.body.userid = req.user._id;
-    post.disLike.push(req.body);
+    const currentPost = await Post.findById(req.params.postId);
 
-    await post.save();
+    currentPost.like.forEach((like) => {
+      if (like.userId.toString() === req.user._id.toString()) {
+        return res.status(400).json({ error: "You already liked this post" });
+      }
+    });
 
-    res.status(200).json(post);
+    currentPost.like.push({ userId: req.body.userId });
+    await currentPost.save();
+
+    res.status(201).json(currentPost.like);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(error);
+  }
+});
+
+router.delete("/:userId/post/:postId/like/:likeId", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.like = currentPost.like.filter((like) => {
+      return like.id !== req.params.likeId;
+    });
+    currentPost.save();
+
+    res.status(200).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error });
   }
 });
 
