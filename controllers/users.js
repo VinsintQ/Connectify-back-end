@@ -534,4 +534,51 @@ router.delete("/:userId/project/:projectId/tools/:toolId", async (req, res) => {
   }
 });
 
+//Like route here--------------
+
+router.get("/:userId/post/:postId/like", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/:userId/post/:postId/like", async (req, res) => {
+  try {
+    req.body.userId = req.user._id;
+
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.like.forEach((like) => {
+      if (like.userId.toString() === req.user._id.toString()) {
+        return res.status(400).json({ error: "You already liked this post" });
+      }
+    });
+
+    currentPost.like.push({ userId: req.body.userId });
+    await currentPost.save();
+
+    res.status(201).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.delete("/:userId/post/:postId/like/:likeId", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+
+    currentPost.like = currentPost.like.filter((like) => {
+      return like.id !== req.params.likeId;
+    });
+    currentPost.save();
+
+    res.status(200).json(currentPost.like);
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error });
+  }
+});
+
 module.exports = router;
