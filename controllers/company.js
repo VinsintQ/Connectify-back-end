@@ -22,6 +22,9 @@ router.get("/:companyId", async (req, res) => {
     if (!company) {
       res.status(404).json({ error: "company not found" });
     }
+    else{
+      res.status(200).json(company);
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -83,23 +86,22 @@ router.post("/:companyId/jobs", async (req, res) => {
   }
 });
 
-router.get("/:companyId/jobs/:jobId ", async (req, res) => {
+router.get("/:companyId/jobs/:jobId", async (req, res) => {
+  console.log("hello")
   try {
-    const job = await Job.find({
-      company: req.params.companyId,
-      _id: req.params.jobId,
-    });
+    // const job = await Job.findById(req.params.jobId);
+    const job = await Job.findOne({company: req.params.companyId, _id: req.params.jobId});
     res.status(200).json(job);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-router.put("/:companyId/jobs/:jobId ", async (req, res) => {
+router.put("/:companyId/jobs/:jobId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
 
-    if (company.owner !== req.user._id) {
+    if (company.owner !== req.user.id) {
       res.status(401).json({ error: "Unauthorized" });
     } else {
       const job = await Job.findByIdAndUpdate(req.params.jobId, req.body);
@@ -110,7 +112,7 @@ router.put("/:companyId/jobs/:jobId ", async (req, res) => {
   }
 });
 
-router.delete("/:companyId/jobs/:jobId ", async (req, res) => {
+router.delete("/:companyId/jobs/:jobId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
 
