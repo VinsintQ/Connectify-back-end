@@ -164,21 +164,21 @@ router.post("/add-friend", async (req, res) => {
 });
 
 //experiece routes here---------------------
+//use less route
+// router.post("/expierience", async (req, res) => {
+//   try {
+//     req.body.UserId = req.user._id;
+//     if (req.body.isCurrentRole) {
+//       req.body.EndDate = null;
+//     }
+//     const expierience = await Expierience.create(req.body);
 
-router.post("/expierience", async (req, res) => {
-  try {
-    req.body.UserId = req.user._id;
-    if (req.body.isCurrentRole) {
-      req.body.EndDate = null;
-    }
-    const expierience = await Expierience.create(req.body);
-
-    res.status(201).json(expierience);
-  } catch (error) {
-    //console.log(error);
-    res.status(500).json(error);
-  }
-});
+//     res.status(201).json(expierience);
+//   } catch (error) {
+//     //console.log(error);
+//     res.status(500).json(error);
+//   }
+// });
 
 router.get("/expierience", async (req, res) => {
   try {
@@ -200,7 +200,7 @@ router.get("/:userId/expierience", async (req, res) => {
       res.status(500).json({ error: "User does not exist" });
     }
     const exp = await Expierience.find({
-      UserId: req.params.userId,
+      UserId: req.user._id,
     });
     res.status(200).json({ exp });
   } catch (error) {
