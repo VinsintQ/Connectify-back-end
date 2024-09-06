@@ -372,7 +372,16 @@ router.get("/:userId/post", async (req, res) => {
     res.status(500).json(error.message);
   }
 });
+router.get("/:userId/allposts", async (req, res) => {
+  try {
+    const posts = await Post.find({});
 
+    res.status(201).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+});
 router.put("/:userId/post/:postId", async (req, res) => {
   const post = await Post.findById(req.params.postId);
 
