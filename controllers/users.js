@@ -69,8 +69,6 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.use(verifyToken);
-
 router.get("/", async (req, res) => {
   try {
     const users = await User.find({});
@@ -80,6 +78,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.use(verifyToken);
 router.post("/add-follower", async (req, res) => {
   try {
     const { username, userId } = req.body;
