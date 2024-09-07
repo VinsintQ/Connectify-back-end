@@ -248,14 +248,11 @@ router.post("/:userId/experience", async (req, res) => {
 router.post(":userId/education", async (req, res) => {
   try {
     req.body.UserId = req.user._id;
-    // if (req.body.isCurrentRole) {
-    //   req.body.EndDate = null;
-    // }
+
     const education = await Education.create(req.body);
 
     res.status(201).json(education);
   } catch (error) {
-    //console.log(error);
     res.status(500).json(error);
   }
 });
