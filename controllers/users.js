@@ -56,7 +56,6 @@ router.post("/signin", async (req, res) => {
         {
           username: user.username,
           _id: user._id,
-          isRestaurant: user.isRestaurant,
         },
         process.env.JWT_SECRET
       );
@@ -161,23 +160,6 @@ router.post("/add-friend", async (req, res) => {
       .json({ error: "An error occurred while adding the friend." });
   }
 });
-
-//experiece routes here---------------------
-//use less route
-// router.post("/expierience", async (req, res) => {
-//   try {
-//     req.body.UserId = req.user._id;
-//     if (req.body.isCurrentRole) {
-//       req.body.EndDate = null;
-//     }
-//     const expierience = await Expierience.create(req.body);
-
-//     res.status(201).json(expierience);
-//   } catch (error) {
-//     //console.log(error);
-//     res.status(500).json(error);
-//   }
-// });
 
 router.get("/expierience", async (req, res) => {
   try {
@@ -368,9 +350,9 @@ router.get("/:userId/post", async (req, res) => {
     res.status(500).json(error.message);
   }
 });
-router.get("/:userId/allposts", async (req, res) => {
+router.get("/:userid/allposts", async (req, res) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find();
 
     res.status(201).json(posts);
   } catch (error) {
