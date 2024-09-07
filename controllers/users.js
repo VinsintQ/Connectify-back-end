@@ -245,7 +245,7 @@ router.post("/:userId/experience", async (req, res) => {
 
 //education routes here------------------------
 
-router.post(":userId/education", async (req, res) => {
+router.post("/:userId/education", async (req, res) => {
   try {
     req.body.UserId = req.user._id;
 
@@ -253,7 +253,7 @@ router.post(":userId/education", async (req, res) => {
 
     res.status(201).json(education);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: "Internal server error", error });
   }
 });
 
