@@ -6,6 +6,7 @@ const toolsSchema = mongoose.Schema({
 
 const projectSchema = mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  name: { required: true, type: String },
   description: { required: true, type: String },
   tools: [toolsSchema],
 });
