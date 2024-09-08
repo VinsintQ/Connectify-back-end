@@ -251,7 +251,16 @@ router.post("/:userId/education", async (req, res) => {
     res.status(500).json({ message: "Internal server error", error });
   }
 });
+router.get("/:userId/education/:eduId", async (req, res) => {
+  try {
+    const edu = await Education.findById(req.params.eduId);
 
+    res.status(200).json(edu);
+  } catch (error) {
+    //console.log(error);
+    res.status(500).json(error);
+  }
+});
 router.get("/:userid/education", async (req, res) => {
   try {
     const user = await User.findById(req.params.userid);
@@ -302,6 +311,17 @@ router.post("/:userId/project", async (req, res) => {
     const project = await Project.create(req.body);
     res.status(201).json(project);
   } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:userId/project/:proId", async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.proId);
+
+    res.status(200).json(project);
+  } catch (error) {
+    //console.log(error);
     res.status(500).json(error);
   }
 });
