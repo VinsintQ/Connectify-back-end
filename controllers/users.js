@@ -161,17 +161,17 @@ router.post("/add-friend", async (req, res) => {
   }
 });
 
-router.get("/expierience", async (req, res) => {
-  try {
-    const expierience = await Expierience.find({
-      UserId: req.user._id,
-    });
-    res.status(200).json(expierience);
-  } catch (error) {
-    //console.log(error);
-    res.status(500).json(error);
-  }
-});
+// router.get("/expierience", async (req, res) => {
+//   try {
+//     const expierience = await Expierience.find({
+//       UserId: req.user._id,
+//     });
+//     res.status(200).json(expierience);
+//   } catch (error) {
+//     //console.log(error);
+//     res.status(500).json(error);
+//   }
+// });
 
 router.get("/:userId/expierience", async (req, res) => {
   try {
@@ -181,7 +181,7 @@ router.get("/:userId/expierience", async (req, res) => {
       res.status(500).json({ error: "User does not exist" });
     }
     const exp = await Expierience.find({
-      UserId: req.user._id,
+      UserId: req.params.userId,
     });
     res.status(200).json({ exp });
   } catch (error) {
@@ -209,14 +209,15 @@ router.delete("/:userId/experience/:expId", async (req, res) => {
 });
 
 router.post("/:userId/experience", async (req, res) => {
+  console.log(req.body);
   try {
     req.body.UserId = req.user._id;
 
-    if (req.body.isCurrentRole) {
-      req.body.EndDate = null;
+    if (req.body.EndDate == null) {
+      req.body.isCurrentRole = false;
     }
     const experience = await Expierience.create(req.body);
-
+    console.log(experience);
     res.status(201).json(experience);
   } catch (error) {
     //console.log(error);
@@ -283,7 +284,7 @@ router.delete("/:userId/education/:eduId", async (req, res) => {
 
 router.post("/:userId/project", async (req, res) => {
   try {
-    req.body.userId = req.user._id;
+    req.body.userId = req.params.userId;
 
     const project = await Project.create(req.body);
     res.status(201).json(project);
@@ -294,7 +295,7 @@ router.post("/:userId/project", async (req, res) => {
 
 router.get("/:userId/project", async (req, res) => {
   try {
-    const projects = await Project.find({ userId: req.user._id });
+    const projects = await Project.find({ userId: req.params.userId });
 
     res.status(201).json(projects);
   } catch (error) {
