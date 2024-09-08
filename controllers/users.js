@@ -184,7 +184,7 @@ router.get("/:userId/experience/:expId", async (req, res) => {
   }
 });
 
-router.get("/:userId/expierience", async (req, res) => {
+router.get("/:userId/experience", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
 
@@ -207,6 +207,8 @@ router.put("/:userId/experience/:expId", async (req, res) => {
   if (!exp.UserId == req.user._id) {
     res.status(500).json({ error: "You are not allowed to do that " });
   }
+  await Expierience.findByIdAndUpdate(req.params.expId, req.body);
+  res.status(200).json({ message: "Expierience updated" });
 });
 
 router.delete("/:userId/experience/:expId", async (req, res) => {
