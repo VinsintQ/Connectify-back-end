@@ -173,6 +173,17 @@ router.post("/add-friend", async (req, res) => {
 //   }
 // });
 
+router.get("/:userId/experience/:expId", async (req, res) => {
+  try {
+    const exp = await Expierience.findById(req.params.expId);
+
+    res.status(200).json(exp);
+  } catch (error) {
+    //console.log(error);
+    res.status(500).json(error);
+  }
+});
+
 router.get("/:userId/expierience", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
