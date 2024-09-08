@@ -27,4 +27,15 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+router.delete("/:conversationId", async (req, res) => {
+  try {
+    const newConv = await Conversation.findByIdAndDelete(
+      req.params.conversationId
+    );
+    res.status(200).json(newConv);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 module.exports = router;
