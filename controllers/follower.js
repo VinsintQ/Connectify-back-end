@@ -48,4 +48,14 @@ router.post("/add-follower", async (req, res) => {
   }
 });
 
+router.delete("/:userId/follower/:followerId", async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  user.Followers = user.Followers.filter((follower) => {
+    return follower.id !== req.params.followerId;
+  });
+  user.save();
+
+  res.status(200).json({ message: "Follower deleted success" });
+});
+
 module.exports = router;
