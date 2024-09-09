@@ -41,7 +41,9 @@ const userSchema = new mongoose.Schema({
   occupation: {
     type: String,
   },
-
+  image: {
+    type: String,
+  },
   hashedPassword: {
     type: String,
     required: true,

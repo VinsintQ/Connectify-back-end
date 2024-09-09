@@ -13,6 +13,7 @@ const express = require("express");
 const { Server } = require("socket.io");
 const http = require("http");
 const usersRouter = require("./controllers/users");
+const uploadImage = require("./uploadImage.js");
 const app = express();
 const server = http.createServer(app);
 app.use(morgan("dev"));
@@ -29,6 +30,16 @@ app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 app.use("/company", companyRouter);
 //app.use("/expierience", expierienceRouter);
+
+app.post("/upload", async (req, res) => {
+  uploadImage(req.body.image)
+    .then((url) => {
+      res.status(200).json({ url });
+    })
+    .catch((error) => {
+      res.status(400).json({ error });
+    });
+});
 
 const io = new Server(server, {
   cors: {
