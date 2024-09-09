@@ -29,6 +29,7 @@ router.post("/signup", async (req, res) => {
       email: req.body.email,
       phone: req.body.phone,
       occupation: req.body.occupation,
+      image: req.body.image,
       hashedPassword: bcrypt.hashSync(
         req.body.password,
         parseInt(process.env.SALT)
