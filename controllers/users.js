@@ -434,7 +434,7 @@ router.get("/:userId/post/:postId/", async (req, res) => {
   try {
     const currentPost = await Post.findById(req.params.postId).populate({
       path: "comments.userid",
-      select: "username ",
+      select: "username image ",
     });
 
     res.status(201).json(currentPost);
