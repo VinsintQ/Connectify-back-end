@@ -432,7 +432,11 @@ router.get("/:userId/post/:postId/comment", async (req, res) => {
 
 router.get("/:userId/post/:postId/", async (req, res) => {
   try {
-    const currentPost = await Post.findById(req.params.postId);
+    const currentPost = await Post.findById(req.params.postId).populate({
+      path: "comments.userid",
+      select: "username ",
+    });
+
     res.status(201).json(currentPost);
   } catch (error) {
     res.status(500).json(error);
@@ -443,6 +447,7 @@ router.post("/:userId/post/:postId/comment", async (req, res) => {
   try {
     req.body.userId = req.user._id;
     const currentPost = await Post.findById(req.params.postId);
+    req.body.userid = req.user._id;
     await currentPost.comments.push(req.body);
     currentPost.save();
     res.status(201).json(currentPost.comments[currentPost.comments.length - 1]);
