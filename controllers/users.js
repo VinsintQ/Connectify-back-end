@@ -430,6 +430,15 @@ router.get("/:userId/post/:postId/comment", async (req, res) => {
   }
 });
 
+router.get("/:userId/post/:postId/", async (req, res) => {
+  try {
+    const currentPost = await Post.findById(req.params.postId);
+    res.status(201).json(currentPost);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.post("/:userId/post/:postId/comment", async (req, res) => {
   try {
     req.body.userId = req.user._id;
