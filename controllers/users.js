@@ -387,7 +387,7 @@ router.get("/:userId/post", async (req, res) => {
 });
 router.get("/:userid/allposts", async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().sort({ createdAt: "desc" });
 
     res.status(201).json(posts);
   } catch (error) {
@@ -434,7 +434,7 @@ router.get("/:userId/post/:postId/", async (req, res) => {
   try {
     const currentPost = await Post.findById(req.params.postId).populate({
       path: "comments.userid",
-      select: "username ",
+      select: "username image ",
     });
 
     res.status(201).json(currentPost);
