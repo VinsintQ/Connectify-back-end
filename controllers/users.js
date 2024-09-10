@@ -387,7 +387,7 @@ router.get("/:userId/post", async (req, res) => {
 });
 router.get("/:userid/allposts", async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().sort({ createdAt: "desc" });
 
     res.status(201).json(posts);
   } catch (error) {
