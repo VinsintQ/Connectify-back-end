@@ -443,10 +443,15 @@ router.get("/:userId/post/:postId/comment", async (req, res) => {
 
 router.get("/:userId/post/:postId/", async (req, res) => {
   try {
-    const currentPost = await Post.findById(req.params.postId).populate({
-      path: "comments.userid",
-      select: "username image ",
-    });
+    const currentPost = await Post.findById(req.params.postId)
+      .populate({
+        path: "comments.userid",
+        select: "username image",
+      })
+      .populate({
+        path: "userId",
+        select: "username image",
+      });
 
     res.status(201).json(currentPost);
   } catch (error) {
