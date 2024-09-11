@@ -127,6 +127,29 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+router.put("/:userId", async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: req.body },
+      { new: true } // This option returns the updated document
+    );
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 router.post("/add-friend", async (req, res) => {
   try {
     const { username, userId } = req.body;
@@ -161,18 +184,6 @@ router.post("/add-friend", async (req, res) => {
       .json({ error: "An error occurred while adding the friend." });
   }
 });
-
-// router.get("/expierience", async (req, res) => {
-//   try {
-//     const expierience = await Expierience.find({
-//       UserId: req.user._id,
-//     });
-//     res.status(200).json(expierience);
-//   } catch (error) {
-//     //console.log(error);
-//     res.status(500).json(error);
-//   }
-// });
 
 router.get("/:userId/experience/:expId", async (req, res) => {
   try {
