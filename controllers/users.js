@@ -115,16 +115,15 @@ router.post("/add-follower", async (req, res) => {
   }
 });
 
-router.put("/update", async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
-      new: true,
-    });
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
+//       new: true,
+//     });
+//     res.status(200).json(updatedUser);
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// });
 router.get("/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
