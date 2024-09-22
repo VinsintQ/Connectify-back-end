@@ -79,7 +79,6 @@ router.get("/", async (req, res) => {
 });
 
 router.use(verifyToken);
-
 router.post("/add-follower", async (req, res) => {
   try {
     const { username, userId } = req.body;
@@ -115,15 +114,6 @@ router.post("/add-follower", async (req, res) => {
   }
 });
 
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(req.user._id, req.body, {
-//       new: true,
-//     });
-//     res.status(200).json(updatedUser);
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// });
 router.get("/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -408,14 +398,18 @@ router.get("/:userId/post", async (req, res) => {
 });
 router.get("/:userid/allposts", async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: "desc" });
+    const posts = await Post.find().sort({ createdAt: "desc" }).populate({
+      path: "userId",
+      select: "username image",
+    });
 
-    res.status(201).json(posts);
+    res.status(200).json(posts); // Use status 200 for successful GET requests
   } catch (error) {
     console.error(error);
-    res.status(500).json(error.message);
+    res.status(500).json({ error: error.message }); // Return a JSON object with the error message
   }
 });
+
 router.put("/:userId/post/:postId", async (req, res) => {
   const post = await Post.findById(req.params.postId);
 
