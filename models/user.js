@@ -40,6 +40,8 @@ const userSchema = new mongoose.Schema({
   },
   occupation: {
     type: String,
+
+    default: "Job Seeker",
   },
   image: {
     type: String,
