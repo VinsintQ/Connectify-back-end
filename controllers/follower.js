@@ -15,7 +15,7 @@ router.get("/:userId", async (req, res) => {
 
 router.post("/add-follower", async (req, res) => {
   try {
-    const { username, userId } = req.body;
+    const { username, userId, image } = req.body;
     const userToAdd = await User.findOne({ username: username });
     if (!userToAdd) {
       return res.status(404).json({ error: "User to add not found." });
