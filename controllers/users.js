@@ -28,7 +28,7 @@ router.post("/signup", async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       phone: req.body.phone,
-      occupation: req.body.occupation,
+      occupation: req.body.occupation.toUpperCase(),
       image: req.body.image,
       hashedPassword: bcrypt.hashSync(
         req.body.password,
