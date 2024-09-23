@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isPrivate: {
+    type: String,
+    default: "false",
+  },
   Followers: [followersSchema],
   Friends: [friendsSchema],
   Skills: [skillsSchema],
