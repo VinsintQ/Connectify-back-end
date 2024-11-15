@@ -16,6 +16,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/Jobs", async (req, res) => {
+  try {
+    const Jobs = await Job.find();
+    res.status(200).json(Jobs);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get("/:companyId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
