@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const Company = require("../models/Company");
 const Job = require("../models/job");
 const App = require("../models/Application");
@@ -15,12 +16,28 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+// jobs routes ----------------------------------------
 router.get("/Jobs", async (req, res) => {
   try {
-    const Jobs = await Job.find();
+    const Jobs = await Job.find().populate("company");
     res.status(200).json(Jobs);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/Jobs/:jobId/app", async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) {
+      return res.status(401).json({ error: "Job not found" });
+    }
+    req.body.userId = req.user._id;
+    req.body.jobId = req.params.jobId;
+    const app = await App.create(req.body);
+    res.status(200).json(app);
+  } catch (error) {
+    console.error("Error occurred during application creation:", error); // Log error to console
     res.status(500).json({ error: error.message });
   }
 });
@@ -140,22 +157,6 @@ router.delete("/:companyId/jobs/:jobId", async (req, res) => {
 
 // applications routes ----------------------------------------
 // apply on a ajob
-router.post("/:companyId/jobs/:jobId/app", async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.companyId);
-    const job = await Job.findById(req.params.jobId);
-    if (!company || !job) {
-      res.status(401).json({ error: "an error occured" });
-    }
-    req.body.userId = req.user._id;
-    req.body.companyId = req.params.companyId;
-    req.body.jobId = req.params.jobId;
-    const app = await App.create(req.body);
-    res.status(200).json(app);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 //retrive all app on a job
 router.get("/:companyId/jobs/:jobId/app", async (req, res) => {
