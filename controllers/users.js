@@ -270,12 +270,12 @@ router.put("/:userId/experience/:expId", async (req, res) => {
 });
 
 router.delete("/:userId/experience/:expId", async (req, res) => {
-  const exp = await Expierience.findByIdAndDelete(req.params.expId);
-
-  if (!exp.UserId == req.user._id) {
+  // const exp = await Expierience.findByIdAndDelete(req.params.expId);
+  const experience = await Expierience.findById(req.params.expId);
+  if (!experience.UserId == req.user._id) {
     res.status(500).json({ error: "only owner can do this " });
   }
-  // const exp = await Expierience.findByIdAndDelete(req.params.expId);
+  const exp = await Expierience.findByIdAndDelete(req.params.expId);
 
   res.status(200).json({ message: "Expierience deleted success" });
 });
