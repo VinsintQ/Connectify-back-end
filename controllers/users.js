@@ -10,7 +10,7 @@ const Education = require("../models/education");
 const Project = require("../models/project");
 const Post = require("../models/post");
 const user = require("../models/user");
-
+const Service = require("../models/service");
 // protected Routes
 
 //Routes
@@ -184,6 +184,44 @@ router.post("/add-friend", async (req, res) => {
       .json({ error: "An error occurred while adding the friend." });
   }
 });
+//services routes ----------------------------------------------------------
+
+router.post("/:userId/service", async (req, res) => {
+  try {
+    req.body.userId = req.user._id;
+
+    const service = await Service.create(req.body);
+    res.status(201).json(service);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.put("/:userId/service/:serviceId", async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.serviceId);
+    if (!req.user._id == service.userId) {
+      res.status(500).json({ error: "You are not allowed to do that " });
+    }
+    await Service.findByIdAndUpdate(req.params.serviceId, req.body);
+    res.status(200).json({ message: "service updated" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.delete("/:userId/service/:serviceId", async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.serviceId);
+    if (!req.user._id == service.userId) {
+      res.status(500).json({ error: "You are not allowed to do that " });
+    }
+    await Service.findByIdAndDelete(req.params.serviceId);
+    res.status(200).json({ message: "Service deleted successfully" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 router.get("/:userId/experience/:expId", async (req, res) => {
   try {
@@ -191,7 +229,6 @@ router.get("/:userId/experience/:expId", async (req, res) => {
 
     res.status(200).json(exp);
   } catch (error) {
-    //console.log(error);
     res.status(500).json(error);
   }
 });
@@ -224,17 +261,17 @@ router.put("/:userId/experience/:expId", async (req, res) => {
 });
 
 router.delete("/:userId/experience/:expId", async (req, res) => {
-  const exp = await Expierience.findByIdAndDelete(req.params.expId);
+  // const exp = await Expierience.findByIdAndDelete(req.params.expId);
 
   if (!exp.UserId == req.user._id) {
     res.status(500).json({ error: "only owner can do this " });
   }
-  // await exp.delete();
+  const exp = await Expierience.findByIdAndDelete(req.params.expId);
+
   res.status(200).json({ message: "Expierience deleted success" });
 });
 
 router.post("/:userId/experience", async (req, res) => {
-  console.log(req.body);
   try {
     req.body.UserId = req.user._id;
 
@@ -242,10 +279,9 @@ router.post("/:userId/experience", async (req, res) => {
       req.body.isCurrentRole = false;
     }
     const experience = await Expierience.create(req.body);
-    console.log(experience);
+
     res.status(201).json(experience);
   } catch (error) {
-    //console.log(error);
     res.status(500).json(error);
   }
 });
@@ -310,7 +346,6 @@ router.delete("/:userId/education/:eduId", async (req, res) => {
 
   const deletedEducation = await Education.findByIdAndDelete(req.params.eduId);
 
-  // await education.delete();
   res.status(200).json({ message: "education deleted success" });
 });
 
@@ -333,7 +368,6 @@ router.get("/:userId/project/:proId", async (req, res) => {
 
     res.status(200).json(project);
   } catch (error) {
-    //console.log(error);
     res.status(500).json(error);
   }
 });

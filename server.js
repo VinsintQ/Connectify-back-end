@@ -30,7 +30,6 @@ app.use("/follower", followerRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 app.use("/company", companyRouter);
-//app.use("/expierience", expierienceRouter);
 
 app.post("/upload", async (req, res) => {
   uploadImage(req.body.image)
