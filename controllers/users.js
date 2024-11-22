@@ -197,10 +197,10 @@ router.post("/:userId/service", async (req, res) => {
   }
 });
 
-router.get("/:userId/service", async (req, res) => {
+router.get("/:userId/services", async (req, res) => {
   try {
-    const services = await Service.find();
-    res.status(200).json({ services });
+    const services = await Service.find().populate("userId");
+    res.status(200).json(services);
   } catch (error) {
     res.status(500).json(error);
   }
