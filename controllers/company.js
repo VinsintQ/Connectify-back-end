@@ -112,9 +112,7 @@ router.post("/:companyId/jobs", async (req, res) => {
 });
 
 router.get("/:companyId/jobs/:jobId", async (req, res) => {
-  console.log("hello");
   try {
-    // const job = await Job.findById(req.params.jobId);
     const job = await Job.findOne({
       company: req.params.companyId,
       _id: req.params.jobId,
@@ -129,7 +127,7 @@ router.put("/:companyId/jobs/:jobId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
 
-    if (company.owner !== req.user._id) {
+    if (!company.owner == req.user._id) {
       res.status(401).json({ error: "Unauthorized" });
     } else {
       const job = await Job.findByIdAndUpdate(req.params.jobId, req.body);
@@ -169,81 +167,6 @@ router.get("/:companyId/jobs/:jobId/app", async (req, res) => {
 
     const app = await App.find({ jobId: req.params.jobId });
     res.status(200).json(app);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//about company routes ----------------------------------------
-
-router.get("/:companyId/about", async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.companyId);
-    if (!company) {
-      res.status(401).json({ error: "cant find thsis company" });
-    }
-    const about = company.About;
-    res.status(200).json(about);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.post("/:companyId/about", async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.companyId);
-    if (!company) {
-      res.status(401).json({ error: "cant find thsis company" });
-    }
-    if (company.owner !== req.user._id) {
-      res.status(401).json({ error: "Unauthorized" });
-    } else {
-      const about = req.body;
-      company.About.push(about);
-      company.save();
-      res.status(200).json(about);
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.put("/:companyId/about", async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.companyId);
-    if (!company) {
-      res.status(401).json({ error: "cant find thsis company" });
-    }
-    if (company.owner !== req.user._id) {
-      res.status(401).json({ error: "Unauthorized" });
-    } else {
-      const about = req.body;
-      company.About[0].description = about.description
-        ? about.description
-        : company.About[0].description
-        ? company.About[0].description
-        : null;
-
-      company.About[0].industry = about.industry
-        ? about.industry
-        : company.About[0].industry
-        ? company.About[0].industry
-        : null;
-
-      company.About[0].workplace = about.workplace
-        ? about.workplace
-        : company.About[0].workplace
-        ? company.About[0].workplace
-        : null;
-
-      company.About[0].location = about.location
-        ? about.location
-        : company.About[0].location
-        ? company.About[0].location
-        : null;
-      company.save();
-      res.status(200).json(about);
-    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

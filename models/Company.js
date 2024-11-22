@@ -1,17 +1,6 @@
 const e = require("cors");
 const mongoose = require("mongoose");
 
-const companyFollowersSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-});
-
-const AboutSchema = new mongoose.Schema({
-  description: { type: String, required: true },
-  industry: { required: true, type: String },
-  workplace: { required: true, type: String },
-  location: String,
-});
-
 const companySchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
@@ -24,8 +13,11 @@ const companySchema = new mongoose.Schema({
     required: true,
   },
   companySize: { enum: ["0-1", "2-49", "50-500", "500+"] },
-  companyFollower: [companyFollowersSchema],
-  About: [AboutSchema],
+
+  about: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Company", companySchema);

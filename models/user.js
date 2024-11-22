@@ -10,13 +10,6 @@ followersSchema = new mongoose.Schema({
   },
 });
 
-skillsSchema = new mongoose.Schema({
-  skillName: {
-    type: String,
-    required: true,
-  },
-});
-
 friendsSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -59,7 +52,6 @@ const userSchema = new mongoose.Schema({
   },
   Followers: [followersSchema],
   Friends: [friendsSchema],
-  Skills: [skillsSchema],
 });
 
 userSchema.set("toJSON", {
