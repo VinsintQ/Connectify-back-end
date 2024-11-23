@@ -3,7 +3,6 @@ const router = express.Router();
 
 const Company = require("../models/Company");
 const Job = require("../models/job");
-const App = require("../models/Application");
 const verifyToken = require("../middleware/verify-token");
 
 router.use(verifyToken);
@@ -25,7 +24,7 @@ router.get("/Jobs", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+//apply on  a job
 router.post("/Jobs/:jobId/app", async (req, res) => {
   try {
     const job = await Job.findById(req.params.jobId);
@@ -33,8 +32,9 @@ router.post("/Jobs/:jobId/app", async (req, res) => {
       return res.status(401).json({ error: "Job not found" });
     }
     req.body.userId = req.user._id;
-    req.body.jobId = req.params.jobId;
-    const app = await App.create(req.body);
+
+    const app = await job.application.push(req.body);
+    await job.save();
     res.status(200).json(app);
   } catch (error) {
     console.error("Error occurred during application creation:", error); // Log error to console
@@ -148,25 +148,6 @@ router.delete("/:companyId/jobs/:jobId", async (req, res) => {
       const job = await Job.findByIdAndDelete(req.params.jobId);
       res.status(200).json({ message: "job deleted successfully" });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// applications routes ----------------------------------------
-// apply on a ajob
-
-//retrive all app on a job
-router.get("/:companyId/jobs/:jobId/app", async (req, res) => {
-  try {
-    const company = await Company.findById(req.params.companyId);
-    const job = await Job.findById(req.params.jobId);
-    if (!company || !job) {
-      res.status(401).json({ error: "an error occured" });
-    }
-
-    const app = await App.find({ jobId: req.params.jobId });
-    res.status(200).json(app);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
