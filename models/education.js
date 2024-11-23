@@ -1,17 +1,5 @@
 const mongoose = require("mongoose");
 
-const skillSchema = mongoose.Schema({
-  SKillName: {
-    required: true,
-    type: String,
-  },
-  UserId: {
-    required: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-});
-
 const educationSchema = mongoose.Schema({
   UserId: {
     required: true,
@@ -34,8 +22,6 @@ const educationSchema = mongoose.Schema({
     required: true,
     type: Date,
   },
-
-  Skills: [skillSchema],
 
   Location: String,
 });

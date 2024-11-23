@@ -186,6 +186,26 @@ router.post("/add-friend", async (req, res) => {
 });
 //services routes ----------------------------------------------------------
 
+router.get("/:userId/service/:serviceId", async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.serviceId);
+
+    res.status(200).json(service);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:userId/Myservice", async (req, res) => {
+  try {
+    const services = await Service.find({ userId: req.params.userId });
+
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.post("/:userId/service", async (req, res) => {
   try {
     req.body.userId = req.user._id;
@@ -216,7 +236,7 @@ router.get("/:userId/services", async (req, res) => {
   }
 });
 
-router.put("/:userId/service/:serviceId", async (req, res) => {
+router.put("/:userId/services/:serviceId", async (req, res) => {
   try {
     const service = await Service.findById(req.params.serviceId);
     if (!req.user._id == service.userId) {
@@ -229,7 +249,7 @@ router.put("/:userId/service/:serviceId", async (req, res) => {
   }
 });
 
-router.delete("/:userId/service/:serviceId", async (req, res) => {
+router.delete("/:userId/services/:serviceId", async (req, res) => {
   try {
     const service = await Service.findById(req.params.serviceId);
     if (!req.user._id == service.userId) {
