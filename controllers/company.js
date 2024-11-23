@@ -142,7 +142,7 @@ router.delete("/:companyId/jobs/:jobId", async (req, res) => {
   try {
     const company = await Company.findById(req.params.companyId);
 
-    if (company.owner !== req.user._id) {
+    if (!company.owner == req.user._id) {
       res.status(401).json({ error: "Unauthorized" });
     } else {
       const job = await Job.findByIdAndDelete(req.params.jobId);
