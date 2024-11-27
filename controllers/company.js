@@ -84,10 +84,10 @@ router.put("/:companyId", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-router.delete("/:companyId", async (req, res) => {
-  deletedCompany = await Company.findByIdAndDelete(req.params.companyId);
-  res.status(200).json({ message: `company deleted` });
-});
+// router.delete("/:companyId", async (req, res) => {
+//   deletedCompany = await Company.findByIdAndDelete(req.params.companyId);
+//   res.status(200).json({ message: `company deleted` });
+// });
 
 //jobs router ----------------------------
 
@@ -148,6 +148,25 @@ router.delete("/:companyId/jobs/:jobId", async (req, res) => {
       const job = await Job.findByIdAndDelete(req.params.jobId);
       res.status(200).json({ message: "job deleted successfully" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:companyId", async (req, res) => {
+  try {
+    const company = await Company.findById(req.params.companyId);
+    if (company.owner.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    await Company.findByIdAndDelete(req.params.companyId);
+
+    await Job.deleteMany({ company: req.params.companyId });
+
+    res
+      .status(200)
+      .json({ message: "Company and associated jobs deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
