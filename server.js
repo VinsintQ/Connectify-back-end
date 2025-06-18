@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
-const profilesRouter = require("./controllers/profile");
+// const profilesRouter = require("./controllers/profile");
 
 const followerRouter = require("./controllers/follower");
 const conversationRouter = require("./controllers/conversation");
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cors());
 
 app.use("/users", usersRouter);
-app.use("/profiles", profilesRouter);
+// app.use("/profiles", profilesRouter);
 app.use("/follower", followerRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
